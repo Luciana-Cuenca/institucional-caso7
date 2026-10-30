@@ -8,6 +8,12 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  // Garantizar que la página siempre comience en la parte superior (Inicio/Hero)
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+
   /* -----------------------------------------------------------------
    * 1. DATOS DEL PROTOTIPO (7 PASOS EXTRAÍDOS DEL DOCUMENTO)
    * ----------------------------------------------------------------- */
@@ -135,8 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /**
    * Renderiza los datos de un paso específico en el prototipo
+   * @param {number} stepNum - Número de paso a mostrar (1 a 7)
+   * @param {boolean} isUserInteraction - Verdadero si proviene de clic del usuario
    */
-  function renderPrototipoStep(stepNum) {
+  function renderPrototipoStep(stepNum, isUserInteraction = false) {
     if (!prototipoPasos[stepNum]) return;
     currentStep = stepNum;
     const data = prototipoPasos[stepNum];
@@ -166,12 +174,18 @@ document.addEventListener('DOMContentLoaded', () => {
     stepSolidaryEl.innerHTML = data.valorSolidario;
     stepGoalEl.textContent = data.meta;
 
-    // Actualizar tabs activas
+    // Actualizar tabs activas (sin desplazar la página completa hacia abajo)
     tabBtns.forEach(btn => {
       const step = parseInt(btn.getAttribute('data-step'));
       if (step === currentStep) {
         btn.classList.add('active');
-        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        if (isUserInteraction) {
+          const navContainer = document.querySelector('.proto-nav-container');
+          if (navContainer) {
+            const leftOffset = btn.offsetLeft - (navContainer.clientWidth / 2) + (btn.clientWidth / 2);
+            navContainer.scrollTo({ left: Math.max(0, leftOffset), behavior: 'smooth' });
+          }
+        }
       } else {
         btn.classList.remove('active');
       }
@@ -192,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const step = parseInt(btn.getAttribute('data-step'));
-      renderPrototipoStep(step);
+      renderPrototipoStep(step, true);
     });
   });
 
@@ -200,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (prevStepBtn) {
     prevStepBtn.addEventListener('click', () => {
       if (currentStep > 1) {
-        renderPrototipoStep(currentStep - 1);
+        renderPrototipoStep(currentStep - 1, true);
       }
     });
   }
@@ -208,16 +222,16 @@ document.addEventListener('DOMContentLoaded', () => {
   if (nextStepBtn) {
     nextStepBtn.addEventListener('click', () => {
       if (currentStep < 7) {
-        renderPrototipoStep(currentStep + 1);
+        renderPrototipoStep(currentStep + 1, true);
       } else {
-        renderPrototipoStep(1);
+        renderPrototipoStep(1, true);
       }
     });
   }
 
   // Exponer función global para nodos del diagrama de flujo
   window.setPrototipoStep = function(stepNum) {
-    renderPrototipoStep(stepNum);
+    renderPrototipoStep(stepNum, true);
     const element = document.getElementById('prototipo');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -442,8 +456,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Inicializar Prototipo en Paso 1
-  renderPrototipoStep(1);
+  // Inicializar Prototipo en Paso 1 (sin desplazar la pantalla)
+  renderPrototipoStep(1, false);
+
+  // Asegurar que al cargar recursos la ventana permanezca en el inicio
+  window.addEventListener('load', () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  });
 
   console.log('AguaViva Esperanza Web App cargada exitosamente.');
 });

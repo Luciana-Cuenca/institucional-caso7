@@ -1921,10 +1921,10 @@ input[type="range"] {
    =================================================================== */
 .authors-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  max-width: 760px;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1050px;
   margin: 0 auto;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .author-card {
@@ -2318,7 +2318,7 @@ input[type="range"] {
   }
 
   .authors-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 
   .results-grid {

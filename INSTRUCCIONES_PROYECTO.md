@@ -29,3 +29,4 @@ Se abrirá de inmediato en cualquier navegador web moderno (Google Chrome, Micro
 ## 👥 Equipo UCC (Curso 2044)
 - **Luciana Cuenca Gomez** (Ingeniería de Software - Campus Pasto, ID: 886578)
 - **David Santiago Sierra Ospina** (Ingeniería Civil - Campus Villavicencio, ID: 751279)
+- **Jeisson Leandro Abril Garcia** (Odontología - Campus Bogotá, ID: 893653)
